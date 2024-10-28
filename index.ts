@@ -3,6 +3,7 @@ import * as os from 'os';
 import * as wsSocket from 'socket.io'
 import express from 'express'
 import http from 'http';
+import { SSH_CONNECT } from './ssh';
 
 const app = express();
 const server = http.createServer(app);
@@ -18,8 +19,8 @@ const SocketServer = async () => {
             origin: "*",
         },
     });
-
     io.on("connection", (socket: wsSocket.Socket) => {
+        SSH_CONNECT(socket)
         const shell = os.platform() === 'win32' ? 'powershell.exe' : 'bash';
         const ptyProcess = pty.spawn(shell, [], {
             name: 'xterm-256color',
