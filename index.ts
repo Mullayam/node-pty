@@ -4,10 +4,10 @@ import * as wsSocket from 'socket.io'
 import express from 'express'
 import http from 'http';
 import { SSH_CONNECT } from './ssh';
-
+import {createHandlers} from '@enjoys/exception'
 const app = express();
 const server = http.createServer(app);
-
+const{UnhandledRoutes,ExceptionHandler} =createHandlers()
 const PORT = 7555
 export let io: wsSocket.Server
 
@@ -24,24 +24,27 @@ const SocketServer = async () => {
         const shell = os.platform() === 'win32' ? 'powershell.exe' : 'bash';
         const ptyProcess = pty.spawn(shell, [], {
             name: 'xterm-256color',
-            cols: 80,
+            cols: 200,
             rows: 30,
             cwd: process.env.HOME,
             env: process.env
         });
-        ptyProcess.onData((data) => {
-            socket.emit("@@RECIEVE_COMMAND", data);
-        });
+        socket.on("@@SSH_EMIT_RESIZE", (size: any) => ptyProcess.resize(size.cols, size.rows))
+
         socket.on("@@SEND_COMMAND", data => ptyProcess.write(data))
+        ptyProcess.onData((data) => socket.emit("@@RECIEVE_COMMAND", data));
         socket.on("disconnect", () => {
             ptyProcess.kill();
         });
     });
-    app.get("*", (req, res) => {
-        res.send("Hello")
-    })
+ 
     server.listen(PORT);
     console.log('Terminal server is running on http://localhost:' + PORT);
     return io
 }
+app.get("*", (req, res) => {
+    res.send("Hello")
+})
+app.use(UnhandledRoutes)
+app.use(ExceptionHandler)
 SocketServer()

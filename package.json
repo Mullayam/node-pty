@@ -5,7 +5,8 @@
   "scripts": {
     "start": "node index.js",
     "dev": "tsc -p .",
-    "build": "pkg index.js --targets node18-linux-x64 --output terminal"
+    "pkg": "pkg index.js --targets node18-linux-x64 --output terminal",
+    "build": "npm install && tsc -p ."
   },
   "pkg": {
     "scripts": "dist/**/*.js",
@@ -23,6 +24,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@enjoys/exception": "^1.1.2",
     "@types/cors": "^2.8.17",
     "@types/node": "^22.7.5",
     "@types/ws": "^8.5.12",
