@@ -4,10 +4,10 @@ import * as wsSocket from 'socket.io'
 import express from 'express'
 import http from 'http';
 import { SSH_CONNECT } from './ssh';
-import {createHandlers} from '@enjoys/exception'
+import { createHandlers } from '@enjoys/exception'
 const app = express();
 const server = http.createServer(app);
-const{UnhandledRoutes,ExceptionHandler} =createHandlers()
+const { UnhandledRoutes, ExceptionHandler } = createHandlers()
 const PORT = 7555
 export let io: wsSocket.Server
 
@@ -27,7 +27,7 @@ const SocketServer = async () => {
             cols: 200,
             rows: 30,
             cwd: process.env.HOME,
-            env: process.env
+            env: process.env,
         });
         socket.on("@@SSH_EMIT_RESIZE", (size: any) => ptyProcess.resize(size.cols, size.rows))
 
@@ -37,7 +37,7 @@ const SocketServer = async () => {
             ptyProcess.kill();
         });
     });
- 
+
     server.listen(PORT);
     console.log('Terminal server is running on http://localhost:' + PORT);
     return io

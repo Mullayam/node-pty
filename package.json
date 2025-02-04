@@ -1,11 +1,11 @@
 {
   "name": "b-node-pty",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "build/index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "node build/index.js",
     "dev": "tsc -p .",
-    "pkg": "pkg index.js --targets node18-linux-x64 --output terminal",
+    "pkg": "pkg build/index.js --targets node18-linux-x64 --output terminal",
     "build": "npm install && tsc -p ."
   },
   "pkg": {
